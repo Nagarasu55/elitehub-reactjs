@@ -1,0 +1,9 @@
+body{
+    margin: 0;
+}
+
+.ant-tabs > .ant-tabs-content-holder,
+.ant-tabs > div > .ant-tabs-content-holder {
+    overflow-y: auto !important;
+    min-height: 0 !important;   /* needed for flex children to scroll properly */
+}
