@@ -10,15 +10,17 @@ import { useNavigate } from "react-router-dom";
 import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import logo from '../../assets/elitehub_logo.svg';
 import { getSocket } from "../../service/socket";
-
+import { useCallback } from "react";
 
 const { Sider, Content } = Layout;
 const { Text } = Typography;
 
 const ChatPage = () => {
-    const { setConversations, activeConversation, resetChat, updateConversationToTop ,setActiveConversation} = useChatStore();
-    const [isMobile, setIsMobile] = useState(false);
-    const [hideSidebar, setHideSidebar] = useState(false);
+    const { setConversations, activeConversation, resetChat, updateConversationToTop, setActiveConversation } = useChatStore();
+
+    const [hideSidebar, setHideSidebar] = useState(() => {
+        return localStorage.getItem("hideSidebar") === "true";
+    });
     const [unreadMap, setUnreadMap] = useState<Record<number, number>>({});
     const [onlineUsers, setOnlineUsers] = useState<number[]>([]);
     const [lastSeenMap, setLastSeenMap] = useState<Record<number, string>>({});
@@ -36,10 +38,18 @@ const ChatPage = () => {
 
     };
 
+    const handleHideSidebar = () => {
+        setHideSidebar(prev => {
+            const newValue = !prev;
+            console.log(newValue)
+            localStorage.setItem("hideSidebar", String(newValue));
+            return newValue;
+        });
+    };
+
     useEffect(() => {
         activeConversationRef.current = activeConversation;
     }, [activeConversation]);
-
 
 
     useEffect(() => {
@@ -72,20 +82,6 @@ const ChatPage = () => {
             }
         });
 
-
-        // socket.on("user_status_changed", ({ userId, isOnline, lastSeen }) => {
-        //     if (isOnline) {
-        //         setOnlineUsers((prev) => prev.includes(userId) ? prev : [...prev, userId]);
-        //     } else {
-        //         setOnlineUsers((prev) => prev.filter((id) => id !== userId));
-        //         setLastSeenMap((prev) => ({
-        //             ...prev,
-        //             [Number(userId)]: lastSeen ?? new Date().toISOString(),
-        //         }));
-        //     }
-        // });
-
-
         socket.on("new_conversation", ({ conversation, message }) => {
             const { conversations, setConversations } = useChatStore.getState();
 
@@ -108,37 +104,15 @@ const ChatPage = () => {
             }
         });
 
-        const handleUnread = (message: any) => {
-            if (message.sender_id === user?.id) return;
-
-            if (message.conversation_id === activeConversationRef.current?.id) {
-                axiosInstance.put(`/messages/mark-read/${message.conversation_id}`, {
-                    userId: user?.id,
-                }).catch(console.error);
-            } else {
-                setUnreadMap((prev) => ({
-                    ...prev,
-                    [message.conversation_id]: (prev[message.conversation_id] ?? 0) + 1,
-                }));
-            }
-
-            // ✅ Move conversation to top on new message
-            updateConversationToTop(message.conversation_id, message.created_at);
-
-        };
-
-        socket.on("receive_message", handleUnread);
-
         return () => {
             socket.off("online_users");
             socket.off("user_status_changed");
-            socket.off("receive_message", handleUnread);
             socket.off("new_conversation");
 
         };
     }, [user?.id]);
 
-  useEffect(() => {
+    useEffect(() => {
         // ✅ Restore from localStorage on page load
         const saved = localStorage.getItem("activeConversationId");
         if (saved && !activeConversation) {
@@ -157,6 +131,13 @@ const ChatPage = () => {
         }
     }, [user?.id]);
 
+    const handleUnreadIncrement = useCallback((conversationId: number, createdAt: string) => {
+        setUnreadMap((prev) => ({
+            ...prev,
+            [conversationId]: (prev[conversationId] ?? 0) + 1,
+        }));
+        updateConversationToTop(conversationId, createdAt);
+    }, [updateConversationToTop]);
 
     // ✅ Save to localStorage whenever active conversation changes
     useEffect(() => {
@@ -212,8 +193,7 @@ const ChatPage = () => {
     useEffect(() => {
         const handleResize = () => {
             const mobile = window.innerWidth < 768;
-            setIsMobile(mobile);
-            setHideSidebar(false);
+            handleHideSidebar();
         };
         handleResize();
         window.addEventListener("resize", handleResize);
@@ -291,9 +271,6 @@ const ChatPage = () => {
                 >
                     <Sidebar
                         currentUserId={user!.id}
-                        onSelectConversation={() => {
-                            if (isMobile) setHideSidebar(true);
-                        }}
                         onlineUsers={onlineUsers}
                         lastSeenMap={lastSeenMap}
                         unreadMap={unreadMap}
@@ -309,8 +286,9 @@ const ChatPage = () => {
                             hideSidebar={hideSidebar}
                             onlineUsers={onlineUsers}
                             lastSeenMap={lastSeenMap}
+                            onUnreadIncrement={handleUnreadIncrement}
                             onBack={() => {
-                                setHideSidebar(prev => !prev);
+                                handleHideSidebar();
                             }}
                         />
                     ) : (

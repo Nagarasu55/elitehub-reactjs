@@ -14,13 +14,12 @@ interface Friend {
 
 interface Props {
     currentUserId: number;
-    onSelectConversation: () => void;
     handleTabChange: (tab: string) => void;
     onlineUsers: number[];
     lastSeenMap: Record<number, string>;
 }
 
-const FriendsList = ({ currentUserId, onSelectConversation, handleTabChange, onlineUsers, lastSeenMap }: Props) => {
+const FriendsList = ({ currentUserId,  handleTabChange, onlineUsers, lastSeenMap }: Props) => {
     const [friends, setFriends] = useState<Friend[]>([]);
     const [loading, setLoading] = useState(false);
     const [actionLoading, setActionLoading] = useState<number | null>(null);
@@ -123,7 +122,7 @@ const FriendsList = ({ currentUserId, onSelectConversation, handleTabChange, onl
         return (
             <>
                 <div style={{ padding: "8px 12px" }}>
-                    <SearchUsers currentUserId={currentUserId} onConversationStart={onSelectConversation} />
+                    <SearchUsers currentUserId={currentUserId}  />
                 </div>
                 <Empty description="No friends yet" style={{ padding: 40 }} />
             </>
@@ -133,7 +132,7 @@ const FriendsList = ({ currentUserId, onSelectConversation, handleTabChange, onl
     return (
         <>
             <div style={{ padding: "8px 12px" }}>
-                <SearchUsers currentUserId={currentUserId} onConversationStart={onSelectConversation} />
+                <SearchUsers currentUserId={currentUserId}  />
             </div>
 
             <List

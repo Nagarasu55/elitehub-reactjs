@@ -5,7 +5,6 @@ export const getDateLabel = (dateStr: string): string => {
 
     const isToday = date.toDateString() === now.toDateString();
 
-    console.log("isToday",date.toDateString(),now.toDateString())
 
     const yesterday = new Date();
     yesterday.setDate(now.getDate() - 1);
@@ -17,7 +16,6 @@ export const getDateLabel = (dateStr: string): string => {
     // Show day name if within last 7 days
     const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
 
-        console.log("diffDays",now.getTime() , date.getTime())
 
 
     if (diffDays < 7) return date.toLocaleDateString("en-US", { weekday: "long" }); // "Monday"
