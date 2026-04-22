@@ -19,14 +19,13 @@ interface Friend {
 
 interface Props {
     currentUserId: number;
-    onSelectConversation: () => void;
     onlineUsers: number[];
     lastSeenMap: Record<number, string>;
     unreadMap: Record<number, number>;   // ✅
     onMarkRead: (id: number) => void;    // ✅
 }
 
-const Sidebar = ({ currentUserId, onSelectConversation, onlineUsers, onMarkRead, lastSeenMap, unreadMap }: Props) => {
+const Sidebar = ({ currentUserId, onlineUsers, onMarkRead, lastSeenMap, unreadMap }: Props) => {
     const [activeTab, setActiveTab] = useState(() => {
         return localStorage.getItem("sidebar_active_tab") ?? "chats";
     });
@@ -54,14 +53,7 @@ const Sidebar = ({ currentUserId, onSelectConversation, onlineUsers, onMarkRead,
 
     const handleSelect = (conversation: Conversation) => {
         setActiveConversation(conversation);
-        onSelectConversation();
     };
-
-
-  
-
-
-
 
     const handleOpenGroupModal = async () => {
         setGroupModalOpen(true);
@@ -204,7 +196,6 @@ const Sidebar = ({ currentUserId, onSelectConversation, onlineUsers, onMarkRead,
             children: (
                 <FriendsList
                     currentUserId={currentUserId}
-                    onSelectConversation={onSelectConversation}
                     handleTabChange={handleTabChange}
                     onlineUsers={onlineUsers}
                     lastSeenMap={lastSeenMap}

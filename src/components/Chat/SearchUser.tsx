@@ -29,10 +29,9 @@ interface SearchedUser {
 
 interface Props {
     currentUserId: number;
-    onConversationStart: () => void;
 }
 
-const SearchUsers = ({ currentUserId, onConversationStart }: Props) => {
+const SearchUsers = ({ currentUserId }: Props) => {
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState("");
     const [results, setResults] = useState<SearchedUser[]>([]);
@@ -97,46 +96,7 @@ const SearchUsers = ({ currentUserId, onConversationStart }: Props) => {
         };
     }, []);
 
-    // const handleSearch = async (value: string) => {
-    //     setQuery(value);
-    //     if (!value.trim()) {
-    //         setResults([]);
-    //         return;
-    //     }
 
-    //     setLoading(true);
-    //     try {
-    //         const res = await axiosInstance.get(`/search?q=${value}`);
-    //         console.log('search',res)
-    //         const filtered = res.data.filter((u: SearchedUser) => u.id !== currentUserId);
-    //                     console.log('filtered', filtered)
-
-    //         setResults(filtered);
-
-    //         // ✅ Check follow status for each result
-    //         const statusMap: Record<number, "none" | "requested" | "following"> = {};
-
-    //         await Promise.all(
-    //             filtered.map(async (user: SearchedUser) => {
-    //                 try {
-    //                     const statusRes = await axiosInstance.get(
-    //                         `/follow/status?followerId=${currentUserId}&followingId=${user.id}`
-    //                     );
-
-    //                     statusMap[user.id] = statusRes.data.status;
-    //                 } catch {
-    //                     statusMap[user.id] = "none";
-    //                 }
-    //             })
-    //         );
-    //         setFollowStatus(statusMap);
-
-    //     } catch (err) {
-    //         console.error(err);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
 
     // Send follow request
     const handleFollowRequest = async (targetUserId: number) => {
@@ -220,7 +180,6 @@ const SearchUsers = ({ currentUserId, onConversationStart }: Props) => {
             }
 
             setOpen(false);
-            onConversationStart();
         } catch (err: any) {
             const errorMsg = err.response?.data?.message;
             if (errorMsg === "Mutual follow required") {

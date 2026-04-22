@@ -135,7 +135,6 @@ const EditGroupModal = ({ open, onClose, conversation, currentUserId, onUpdate }
         (f) => !members.find((m) => m.id === f.id)
     );
 
-    console.log("availableFriends", availableFriends,friends);
 
     return (
         <Modal

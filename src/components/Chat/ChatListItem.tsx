@@ -14,12 +14,10 @@ interface Props {
 }
 
 
-
 const ChatListItem = ({ conversation, currentUserId, onClick, onlineUsers = [], lastSeenMap = {},unreadCount }: Props) => {
     const { activeConversation } = useChatStore();
     const { token } = theme.useToken();
 
-    console.log('onlineUsers chatitem', onlineUsers);
 
 
     // Make sure this matches your actual conversation type string
@@ -38,7 +36,6 @@ const ChatListItem = ({ conversation, currentUserId, onClick, onlineUsers = [], 
 
     const formatLastSeen = (userId: number): string => {
         const timestamp = lastSeenMap[userId];
-        console.log('lastSeenMap for', userId, '->', timestamp, '| full map:', lastSeenMap); // 👈 add this
 
         if (!timestamp) return "Offline";
 
@@ -65,7 +62,6 @@ const ChatListItem = ({ conversation, currentUserId, onClick, onlineUsers = [], 
                     ? formatLastSeen(otherMember.id)
                     : "Offline";
 
-    console.log('lastseen othermember', otherMember)
 
     return (
         <div
