@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Avatar, Button, Layout, Popover, theme, Typography } from "antd";
 import { useChatStore } from "../../store/chatStore";
 import axiosInstance from "../../service/axios";
-import Sidebar from "../../components/Chat/Sidebar";
-import ChatWindow from "../../components/Chat/ChatWindow";
+import Sidebar from "../../components/Chat/Sidebar/Sidebar";
+import ChatWindow from "../../components/Chat/ChatWindow.tsx/ChatWindow";
 import styles from "./ChatPage.module.css";
 import { useAuthStore } from "../../store/authStore";
 import { useNavigate } from "react-router-dom";
@@ -34,6 +34,7 @@ const ChatPage = () => {
         clearUser();
         resetChat();
         navigate("/");
+        localStorage.clear();
         socket.emit("user_offline", user!.id);
 
     };

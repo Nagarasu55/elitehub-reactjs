@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Avatar, Badge, Button, List, Typography, Empty, Spin, Popconfirm, Space, message } from "antd";
 import { MessageOutlined, UserDeleteOutlined } from "@ant-design/icons";
-import axiosInstance from "../../service/axios";
-import SearchUsers from "./SearchUser";
-import { useChatStore } from "../../store/chatStore";
+import axiosInstance from "../../../service/axios";
+import SearchUsers from "../SearchUser/SearchUser";
+import { useChatStore } from "../../../store/chatStore";
 
 const { Text } = Typography;
 

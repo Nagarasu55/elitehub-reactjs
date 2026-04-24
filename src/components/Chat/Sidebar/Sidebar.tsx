@@ -1,12 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
 import { Input, Tabs, Badge, Typography, Button, Modal, Form, Checkbox, Avatar, message } from "antd";
 import { PlusOutlined, UsergroupAddOutlined } from "@ant-design/icons";
-import { useChatStore } from "../../store/chatStore";
-import type { Conversation } from "../../types/chats";
-import ChatListItem from "./ChatListItem";
-import FollowRequests from "./FollowRequests";
-import FriendsList from "./FriendsList";
-import axiosInstance from "../../service/axios";
+import { useChatStore } from "../../../store/chatStore";
+import type { Conversation } from "../../../types/chats";
+import ChatListItem from "../ChatlistItem/ChatListItem";
+import FollowRequests from "../FollowRequests/FollowRequests";
+import FriendsList from "../FriendsList/FriendsList";
+import axiosInstance from "../../../service/axios";
 
 const { Search } = Input;
 const { Text } = Typography;
@@ -50,6 +50,8 @@ const Sidebar = ({ currentUserId, onlineUsers, onMarkRead, lastSeenMap, unreadMa
             return name?.toLowerCase().includes(search.toLowerCase());
         }),
         [conversations, search, currentUserId]);
+
+        console.log('filtered',filtered)
 
     const handleSelect = (conversation: Conversation) => {
         setActiveConversation(conversation);

@@ -4,8 +4,8 @@ import {
     CheckOutlined,
     CloseOutlined,
 } from "@ant-design/icons";
-import axiosInstance from "../../service/axios";
-import type { FollowRequest } from "../../types/chats";
+import axiosInstance from "../../../service/axios";
+import type { FollowRequest } from "../../../types/chats";
 
 const { Text } = Typography;
 

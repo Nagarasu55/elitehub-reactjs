@@ -1,4 +1,4 @@
-import type { S3FileUrl } from "../components/Chat/ChatWindow";
+import type { S3FileUrl } from "../components/Chat/ChatWindow.tsx/ChatWindow";
 
 export interface User {
     id: number;

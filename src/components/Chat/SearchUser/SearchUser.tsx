@@ -15,8 +15,8 @@ import {
     MessageOutlined,
     SearchOutlined,
 } from "@ant-design/icons";
-import axiosInstance from "../../service/axios";
-import { useChatStore } from "../../store/chatStore";
+import axiosInstance from "../../../service/axios";
+import { useChatStore } from "../../../store/chatStore";
 
 const { Text } = Typography;
 
