@@ -692,6 +692,8 @@ import type { Message } from "../../../types/chats";
 import type { S3FileUrl } from "../ChatWindow.tsx/ChatWindow";
 import type { MenuProps } from "antd";
 import styles from "./MessageBubble.module.css";
+import axiosInstance from "../../../service/axios"; // adjust path
+
 
 const { Text } = Typography;
 
@@ -871,15 +873,43 @@ const MessageBubble = ({
         return `${cleanBase}(${n})${ext}`;
     };
 
-    const fetchAndCache = async (f: S3FileUrl): Promise<string> => {
-        if (downloadedFiles[f.key]) return downloadedFiles[f.key].blobUrl;
-        const proxyUrl = `/api/messages/download?url=${encodeURIComponent(f.url)}&name=${encodeURIComponent(f.name)}`;
-        const res = await fetch(proxyUrl);
-        const blob = await res.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        setDownloadedFiles(prev => ({ ...prev, [f.key]: { url: f.url, blobUrl, name: f.name } }));
-        return blobUrl;
-    };
+    // const fetchAndCache = async (f: S3FileUrl): Promise<string> => {
+    //     if (downloadedFiles[f.key]) return downloadedFiles[f.key].blobUrl;
+    //     const proxyUrl = `/api/messages/download?url=${encodeURIComponent(f.url)}&name=${encodeURIComponent(f.name)}`;
+    //     const res = await fetch(proxyUrl);
+    //     const blob = await res.blob();
+    //     const blobUrl = URL.createObjectURL(blob);
+    //     setDownloadedFiles(prev => ({ ...prev, [f.key]: { url: f.url, blobUrl, name: f.name } }));
+    //     return blobUrl;
+    // };
+
+
+const fetchAndCache = async (f: S3FileUrl): Promise<string> => {
+    if (downloadedFiles[f.key]) return downloadedFiles[f.key].blobUrl;
+
+    const response = await axiosInstance.get("/messages/download", {
+        params: {
+            url: f.url,
+            name: f.name,
+        },
+        responseType: "blob", // ✅ critical — tells axios to handle binary
+        timeout: 60000,       // ✅ increase timeout for large files (9MB)
+    });
+
+    const blob = new Blob([response.data], { 
+        type: response.headers["content-type"] || "application/octet-stream" 
+    });
+    
+    console.log("blob size:", blob.size);   // should be 9MB
+    console.log("blob type:", blob.type);   // should be audio/mpeg
+
+    const blobUrl = URL.createObjectURL(blob);
+    setDownloadedFiles(prev => ({ 
+        ...prev, 
+        [f.key]: { url: f.url, blobUrl, name: f.name } 
+    }));
+    return blobUrl;
+};
 
     const triggerSaveToDisk = (blobUrl: string, name: string) => {
         const a = document.createElement("a");
@@ -1101,7 +1131,7 @@ const MessageBubble = ({
                                             if (f.mimeType?.startsWith("audio/")) {
                                                 return (
                                                     <div key={i} className={styles.audioWrapper}>
-                                                        <audio controls className={styles.audioElement}>
+                                                        <audio controls className={styles.audioElement} preload="metadata">
                                                             <source src={f.url} type={f.mimeType} />
                                                         </audio>
                                                         <div className={styles.audioFooter}>

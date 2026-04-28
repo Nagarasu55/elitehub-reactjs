@@ -798,6 +798,30 @@ const ChatWindow = ({
     useEffect(() => { activeConversationRef.current = activeConversation; }, [activeConversation]);
     useEffect(() => { onUnreadIncrementRef.current = onUnreadIncrement; }, [onUnreadIncrement]);
 
+
+        // ── Active conversation change ──────────────────────────────────────────
+    useEffect(() => {
+        if (!activeConversation) return;
+        setLoading(true);
+        setTypingUsers([]);
+        setText("");
+        setFilePreviews([]);
+        isTypingRef.current = false;
+        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+
+        axiosInstance
+            .get(`/messages/${activeConversation.id}?userId=${currentUserId}`)
+            .then((res) => setMessages(res.data))
+            .catch(console.error)
+            .finally(() => setLoading(false));
+
+        socket.emit("join", activeConversation.id);
+        socket.emit("mark_delivered", { conversationId: activeConversation.id, userId: currentUserId });
+        socket.emit("mark_read", { conversationId: activeConversation.id, userId: currentUserId });
+
+        return () => { socket.emit("leave", activeConversation.id); };
+    }, [activeConversation?.id]);
+    
     // ── Listeners ──────────────────────────────────────────────────────────
     useEffect(() => {
         const handleTyping = ({ conversationId, username }: { conversationId: number; userId: number; username: string }) => {
@@ -884,28 +908,7 @@ const ChatWindow = ({
                     ? formatLastSeen(otherMember.id)
                     : "Offline";
 
-    // ── Active conversation change ──────────────────────────────────────────
-    useEffect(() => {
-        if (!activeConversation) return;
-        setLoading(true);
-        setTypingUsers([]);
-        setText("");
-        setFilePreviews([]);
-        isTypingRef.current = false;
-        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
 
-        axiosInstance
-            .get(`/messages/${activeConversation.id}?userId=${currentUserId}`)
-            .then((res) => setMessages(res.data))
-            .catch(console.error)
-            .finally(() => setLoading(false));
-
-        socket.emit("join", activeConversation.id);
-        socket.emit("mark_delivered", { conversationId: activeConversation.id, userId: currentUserId });
-        socket.emit("mark_read", { conversationId: activeConversation.id, userId: currentUserId });
-
-        return () => { socket.emit("leave", activeConversation.id); };
-    }, [activeConversation?.id]);
 
     // ── Receive message ────────────────────────────────────────────────────
     useEffect(() => {

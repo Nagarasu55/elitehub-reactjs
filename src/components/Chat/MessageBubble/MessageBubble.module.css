@@ -162,23 +162,6 @@
     opacity: 0.5;
 }
 
-/* ── Audio attachment ─────────────────────────────────────────────────────── */
-.audioWrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.audioElement {
-    max-width: 260px;
-    height: 36px;
-}
-
-.audioFooter {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
 
 .audioName {
     font-size: 11px;
@@ -286,4 +269,27 @@
     flex-direction: column;
     gap: 12px;
     padding-top: 8px;
+}
+
+
+/* In MessageBubble.module.css */
+
+.audioWrapper {
+  display: flex;
+  flex-direction: column;
+  min-width: 100%;      /* ✅ prevents collapsing */
+  max-width: 320px;
+  gap: 4px;
+}
+
+.audioElement {
+  width: 100%;           /* ✅ fills wrapper */
+  height: 40px;          /* ✅ fixed height */
+  display: block;
+}
+
+.audioFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
