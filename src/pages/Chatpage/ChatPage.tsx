@@ -190,16 +190,7 @@ const ChatPage = () => {
         }
     }; // ✅ closes here, not after JSX
 
-    // ✅ Resize handler
-    useEffect(() => {
-        const handleResize = () => {
-            const mobile = window.innerWidth < 768;
-            handleHideSidebar();
-        };
-        handleResize();
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
+
 
     const profileContent = (
         <div style={{ width: 200 }}>

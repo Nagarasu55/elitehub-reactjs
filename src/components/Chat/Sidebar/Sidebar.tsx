@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Input, Tabs, Badge, Typography, Button, Modal, Form, Checkbox, Avatar, message } from "antd";
-import { PlusOutlined, UsergroupAddOutlined } from "@ant-design/icons";
+import {  UsergroupAddOutlined } from "@ant-design/icons";
 import { useChatStore } from "../../../store/chatStore";
 import type { Conversation } from "../../../types/chats";
 import ChatListItem from "../ChatlistItem/ChatListItem";
@@ -29,7 +29,7 @@ const Sidebar = ({ currentUserId, onlineUsers, onMarkRead, lastSeenMap, unreadMa
     const [activeTab, setActiveTab] = useState(() => {
         return localStorage.getItem("sidebar_active_tab") ?? "chats";
     });
-    const { conversations, setActiveConversation, setConversations, activeConversation } = useChatStore();
+    const { conversations, setActiveConversation, setConversations } = useChatStore();
     const [search, setSearch] = useState("");
     const [pendingCount, setPendingCount] = useState(0);
 

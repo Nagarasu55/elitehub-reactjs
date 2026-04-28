@@ -105,7 +105,6 @@ const MessageBubble = ({
     const [videoModal, setVideoModal] = useState<S3FileUrl | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [editText, setEditText] = useState(message.body ?? "");
-    const [deleteTarget, setDeleteTarget] = useState<"for_me" | "for_everyone" | null>(null);
 
     // ── Derived ────────────────────────────────────────────────────────────
     const fileUrls: S3FileUrl[] = typeof message.file_urls === "string"
